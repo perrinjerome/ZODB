@@ -8,6 +8,8 @@
 - Fixed: When opening FileStorages in read-only mode, non-existent
   files were silently created.  Creating a read-only file-storage
   against a non-existent file errors.
+- Fix UnboundLocalError when running fsoids.py script.
+  See `issue 268 <https://github.com/zopefoundation/ZODB/issues/285>`_.
 
 4.4.5 (2017-02-06)
 ==================
