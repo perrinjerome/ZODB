@@ -356,6 +356,7 @@ class OptionsTestBase:
         class Options:
             repository = self._repository_directory
             date = None
+            keep_only_latest_index = False
 
             def __init__(self, **kw):
                 self.__dict__.update(kw)
@@ -799,6 +800,7 @@ class Test_do_incremental_backup(OptionsTestBase, unittest.TestCase):
                                     killold=False,
                                     test_now=(2010, 5, 14, 10, 51, 22),
                                     date=None,
+                                    keep_only_latest_index=True,
                                     )
         fullfile = os.path.join(self._repository_directory,
                                 '2010-05-14-00-00-00.fs')
@@ -836,6 +838,7 @@ class Test_do_incremental_backup(OptionsTestBase, unittest.TestCase):
                                     killold=False,
                                     test_now=(2010, 5, 14, 10, 51, 22),
                                     date=None,
+                                    keep_only_latest_index=True,
                                     )
         fullfile = os.path.join(self._repository_directory,
                                 '2010-05-14-00-00-00.fs')
