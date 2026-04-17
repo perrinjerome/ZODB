@@ -9,6 +9,9 @@
   ``class-factory`` option to ZConfig database configuration.
   See `issue #420 <https://github.com/zopefoundation/ZODB/issues/420>`_.
 
+- repozo: ``--verify`` now accepts ``--file`` to also verify backup
+  consistency against the source Data.fs file.
+
 - repozo: Change restoration to be incremental by default, unless ``--full`` is
   provided.
   Repozo now tries to append the new incremental deltafs on previously restored

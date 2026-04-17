@@ -100,6 +100,12 @@ Options for -R/--recover:
         check fails, the partially recovered ZODB will be left in place.
 
 Options for -V/--verify:
+    -f file
+    --file=file
+        Source Data.fs file.  If specified, the backup is also verified
+        against the source file by comparing md5 checksums of the source file
+        with checksums from the .dat file.
+
     -Q / --quick
         Verify file sizes only (skip md5 checksums).
 """
@@ -305,9 +311,6 @@ def parseargs(argv):
         if options.gzip:
             log('--gzip option is ignored in verify mode')
             options.gzip = False
-        if options.file is not None:
-            log('--file option is ignored in verify mode')
-            options.file = None
         if options.killold:
             log('--kill-old-on-full option is ignored in verify mode')
             options.killold = False
@@ -925,6 +928,24 @@ def do_verify(options):
                     raise VerificationFail(
                         f"{filename} has checksum {actual_sum}"
                         f"{when_uncompressed} instead of {sum}")
+            if options.file and not options.quick:
+                src_size = os.path.getsize(options.file)
+                log("Verifying %s from %s to %s", options.file, startpos, endpos)
+                with open(options.file, 'rb') as srcfp:
+                    srcfp.seek(startpos)
+                    actual_sum = checksum(srcfp, endpos - startpos)
+                if actual_sum != sum:
+                    raise VerificationFail(
+                        f"source {options.file} between {startpos} and {endpos}"
+                        f" has checksum {actual_sum} instead of {sum}")
+
+    if options.file and options.quick:
+        _, _, endpos, _ = scandat(repofiles)
+        src_size = os.path.getsize(options.file)
+        if src_size < endpos:
+            raise VerificationFail(
+                "source is %d bytes, shorter than backup %d bytes"
+                % (src_size, endpos))
 
 
 def get_checksum_and_size_of_gzipped_file(filename, quick):
